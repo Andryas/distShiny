@@ -3,9 +3,10 @@ library(shiny)
 shinyUI(
   fluidPage(
     titlePanel("Principais Modelos Discretos e Contínuos"),
+    withMathJax(),
     sidebarLayout(
     sidebarPanel(
-      radioButtons("dist",label = "Escolha uma distribuição",
+      selectInput("dist",label = "Escolha uma distribuição",
                    choices = c("Normal" = "normal")),
       fluidRow(
         column(width = 6,
@@ -23,7 +24,8 @@ shinyUI(
       )
     ),
     mainPanel(
-       plotOutput("distPlot")
+       plotOutput("distPlot"),
+       uiOutput("formula") 
     )
   )
  )
