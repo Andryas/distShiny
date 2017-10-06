@@ -1,6 +1,6 @@
 library(ggplot2)
 
-dnormal <- function(mu,sig,x1,x2) {
+normal <- function(mu,sig,x1,x2) {
   x <- seq(from = mu - 6 * sig, to = mu + 6 * sig,length.out = 1000)
   
   df <- data.frame(x = x,
@@ -20,7 +20,7 @@ dnormal <- function(mu,sig,x1,x2) {
   
   z2 <- (x2 - mu) / sig
   
-  qplot(df$x,df$y, geom = "line", xlab = "x", ylab = "f(x)") + 
+  g <- qplot(df$x,df$y, geom = "line", xlab = "x", ylab = "f(x)") + 
     geom_polygon(data = df2, aes(x,y), fill = "blue") + 
     geom_line(data = arrow1, aes(x = x, y = y),
               arrow = arrow(length = unit(0.3,"cm"),
@@ -30,10 +30,6 @@ dnormal <- function(mu,sig,x1,x2) {
               arrow = arrow(length = unit(0.3,"cm"),
                             ends = "first",type = "closed",angle = 45)) + 
     annotate("text",x = arrow2$x[2], y = arrow2$y[2] + sumy * 0.1, label = z2)
-}
-
-pnormal <- function(mu,sig,x1,x2){
-  z1 <- (x1 - mu) / sig
-  z2 <- (x2 - mu) / sig
-  return(list(z1 = z1,z2 = z2, r = pnorm(z2) - pnorm(z1)))
+  
+  list(g,z1,z2,r = pnorm(z2) - pnorm(z1))
 }
