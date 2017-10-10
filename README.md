@@ -17,7 +17,7 @@ Os modelos abordados são:
 **Modelos Contínuos**
 
 - [ ] Modelo Uniforme Contínuo
-- [ ] Modelo Exponencial
+- [X] Modelo Exponencial
 - [X] Modelo Normal
 
 Para visualizar a aplicação shiny basta abrir o software R, instalar os pacotes

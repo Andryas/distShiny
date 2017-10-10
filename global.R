@@ -33,3 +33,35 @@ normal <- function(mu,sig,x1,x2) {
   
   list(g,z1,z2,r = pnorm(z2) - pnorm(z1))
 }
+
+exponencial <- function(lambda,x1,x2){
+ to <- if(x2 <= (10/lambda)){10 / lambda} else{x2}
+ 
+ x <-  seq(from = 0, to = to, length.out = 1000)
+ 
+ df <- data.frame(x = x,
+                  y = dexp(x,lambda))
+ 
+ df2 <- data.frame(x = c(x1,seq(from = x1, to = x2,length.out = 1000),x2),
+                   y = c(0,dexp(seq(x1,x2,length.out = 1000),rate = lambda),0))
+ 
+ sumy <- mean(df$y) * 1.2
+ 
+ arrow1 <- rbind(df2[2,],c(df2[2,1],df2[2,2] + sumy))
+ 
+ arrow2 <- rbind(df2[nrow(df2)-1,], c(df2[nrow(df2)-1,1],
+                                      df2[nrow(df2)-1,2] + sumy))
+ 
+ 
+ g <- qplot(x = x,y = y,data = df,geom = "line") + 
+   geom_polygon(data = df2, aes(x,y), fill = "blue") + 
+   labs(x = "x", y = "f(x)") + 
+   geom_line(data = arrow1,aes(x = x,y = y),arrow = arrow(length = unit(0.3,"cm"),
+                                           ends = "first",type = "closed")) + 
+   geom_line(data = arrow2,aes(x = x,y = y),arrow = arrow(length = unit(0.3,"cm"),
+                                           ends = "first",type = "closed")) + 
+   annotate("text",x = arrow1$x[2], y = arrow1$y[2] + sumy * 0.2, label = x1) +
+   annotate("text",x = arrow2$x[2], y = arrow2$y[2] + sumy * 0.2, label = x2)
+   
+ list(g,r = pexp(x2,lambda) - pexp(x1,lambda))
+}
