@@ -10,6 +10,7 @@ Os modelos abordados são:
 
 - [ ] Modelo Uniforme Discreto
 - [ ] Modelo Bernoulli/Binomial
+- [ ] Modelo Binomial Negativo 
 - [ ] Modelo Geométrico
 - [ ] Modelo Poisson
 - [ ] Modelo Hipergeométrico
@@ -19,6 +20,11 @@ Os modelos abordados são:
 - [ ] Modelo Uniforme Contínuo
 - [X] Modelo Exponencial
 - [X] Modelo Normal
+- [ ] Modelo Cauchy
+- [ ] Modelo Gama
+- [ ] Modelo Beta
+- [ ] Modelo Von Mises
+
 
 Para visualizar a aplicação shiny basta abrir o software R, instalar os pacotes
 shiny e devtools, caso não estejam instalados, e digitar o comando
