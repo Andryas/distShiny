@@ -6,7 +6,7 @@ shinyServer(function(input, output, session) {
   
   # Normal ---------------------------------------------------------------------
   # Calcula z1 e z2 padronizado e retorna a probabilidade entre eles
-  rn <- reactive({normal(input$mu,input$sigma,input$x1,input$x2)[2:4]})
+  rn <- reactive({normal(input$mu,input$sigma,input$x1,input$x2)})
   
   # Valor reativo para média da normal
   mun <- reactive({input$mu})
@@ -23,11 +23,20 @@ shinyServer(function(input, output, session) {
     }
   })
   
+  
   # Exponencial ----------------------------------------------------------------
   rexp <- reactive({exponencial(input$lambda,input$x1exp,input$x2exp)})
   
   
-  # Descrição
+  # Uniforme Continua ----------------------------------------------------------
+  runifcont <- reactive({uniforme_cont(input$a_unif_cont,input$b_unif_cont,
+                                       input$x1unif_cont,input$x2unif_cont)})
+  
+  # Uniforme Discreta ----------------------------------------------------------
+  runifdis <- reactive({uniforme_dis(input$k_unif_dis,input$x1unif_dis,
+                                     input$x2unif_dis)})
+  
+  # Descrição ------------------------------------------------------------------
   observeEvent(input$sobre,{
     switch (input$dist,
             normal = showModal(modalDialog(
@@ -64,15 +73,35 @@ shinyServer(function(input, output, session) {
   
   
   
-  # Gráfico das distribuições
+  # Gráfico das distribuições --------------------------------------------------
   output$distPlot <- renderPlot({
     validate(
-      need(!(input$x1 >= input$x2 && input$dist == "normal"), "x1 não pode ser maior que x2."),
-      need(!(input$x1exp >= input$x2exp && input$dist == "exponencial"), "x1 não pode ser maior que x2.")
+      need(!(input$x1 >= input$x2 && input$dist == "normal"),
+           "x1 não pode ser maior que x2."),
+      need(!(input$x1exp >= input$x2exp && input$dist == "exponencial"),
+           "x1 não pode ser maior que x2."),
+      need(!(input$lambda <= 0 && input$dist == "exponencial"),
+           "lambda não pode ser menor ou igual à 0"),
+      need(!(input$x1unif_cont >= input$x2unif_cont && input$dist == "uniformecont"),
+           "x1 não pode ser maior que x2."),
+      need(!(input$x1unif_cont < input$a_unif_cont && 
+               input$dist == "uniformecont" ),
+           "x1 não pode ser menor que a."),
+      need(!(input$a_unif_cont >= input$b_unif_cont &&
+               input$dist == "uniformecont"),
+           "a não pode ser maior ou igual a b"),
+      need(!(input$x2unif_cont > input$b_unif_cont && input$dist == "uniformecont"),
+           "x2 não pode ser maior que b"),
+      need(!(input$x1unif_dis >= input$x2unif_dis && input$dist == "uniformedis"),
+           "x1 não pode ser maior que x2."),
+      need(!(input$x2unif_dis > input$k_unif_dis && input$dist == "uniformedis"),
+           "x2 não pode ser maior que k")
     )
     switch(input$dist,
-           normal = normal(input$mu,input$sigma,input$x1,input$x2)[[1]],
-           exponencial = exponencial(input$lambda,input$x1exp,input$x2exp)[[1]]
+           normal = rn()[[1]],
+           exponencial = rexp()[[1]],
+           uniformecont = runifcont()[[1]],
+           uniformedis = runifdis()[[1]]
       )
   })
   
@@ -81,7 +110,9 @@ shinyServer(function(input, output, session) {
   output$formula <- renderUI({
     validate(
       need(!(input$x1 >= input$x2 && input$dist == "normal"), ""),
-      need(!(input$x1exp >= input$x2exp && input$dist == "exponencial"), "")
+      need(!(input$x1exp >= input$x2exp && input$dist == "exponencial"), ""),
+      need(!(input$lambda <= 0 && input$dist == "exponencial"),
+           "")
     )
     
     switch(input$dist,
@@ -90,8 +121,8 @@ shinyServer(function(input, output, session) {
               input$x2,")= P(\\frac{X1 - \\mu}{\\sigma} \\leq \\frac{X - \\mu}",
                 "{\\sigma} \\leq \\frac{X2 - \\mu}{\\sigma})= P(\\frac{",
                 input$x1,"-",input$mu,"}{",input$sigma,"}\\leq Z \\leq \\frac{",
-                input$x2,"-",input$mu,"}{",input$sigma,"}) \\\\ P(",rn()[[1]]),
-                "\\leq Z \\leq",rn()[[2]],")=",rn()[[3]],"$$")),
+                input$x2,"-",input$mu,"}{",input$sigma,"}) \\\\ P(",rn()[[2]]),
+                "\\leq Z \\leq",rn()[[3]],")=",rn()[[4]],"$$")),
            exponencial = withMathJax(helpText("$$P(X_1 \\leq X \\leq X_2) =",
               "P(",input$x1exp,"\\leq X \\leq",input$x2exp,")=",
               "\\int^{X_2}_{X_1}\\lambda e^{-\\lambda x}dx = \\int^{",input$x2exp,

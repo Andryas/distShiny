@@ -1,5 +1,7 @@
 library(ggplot2)
 
+
+# Continuas
 normal <- function(mu,sig,x1,x2) {
   x <- seq(from = mu - 6 * sig, to = mu + 6 * sig,length.out = 1000)
   
@@ -100,3 +102,21 @@ uniforme_cont <- function(a,b,x1,x2){
   list(g,r = punif(x2,a,b) - punif(x1,a,b))
 }
 
+# Discretas
+uniforme_dis <- function(k,x1,x2){
+  x <- seq(from = 1, to = k)
+  
+  df <- data.frame(x = x,
+                   y = 1/k)
+  
+  df2 <- data.frame(x = seq(from = x1, to = x2),
+                    y = rep(1/k, times = length(seq(from = x1, to = x2))))
+  
+  g <- qplot(x = x, xend = x, yend = y, y = 0, data = df,
+        geom = "segment", xlab = "x", ylab = "f(x)") + 
+    geom_segment(aes(x = x, xend = x, y = 0, yend = y),
+                 data = df2, colour = "blue") + 
+    scale_x_discrete(limits = x,labels = as.factor(df$x))
+  
+  list(g,r = length(seq(from = x1, to = x2)) / k )
+}
