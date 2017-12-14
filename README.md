@@ -8,16 +8,16 @@ Os modelos abordados são:
 
 **Modelos Discretos**
 
-- [ ] Modelo Uniforme Discreto
-- [ ] Modelo Bernoulli/Binomial
-- [ ] Modelo Binomial Negativo 
-- [ ] Modelo Geométrico
-- [ ] Modelo Poisson
-- [ ] Modelo Hipergeométrico
+- [X] Modelo Uniforme Discreto <!-- calculo de probabildiade -->
+- [X] Modelo Bernoulli/Binomial <!--  calculo de probabildiade -->
+- [X] Modelo Binomial Negativo <!-- calculo de probabildiade -->
+- [X] Modelo Geométrico <!-- Expressão da distribuição e calculo de probabildiade -->
+- [X] Modelo Poisson <!-- Expressão da distribuição e calculo de probabildiade -->
+- [X] Modelo Hipergeométrico <!-- Expressão da distribuição e calculo de probabildiade -->
 
 **Modelos Contínuos**
 
-- [ ] Modelo Uniforme Contínuo
+- [X] Modelo Uniforme Contínuo <!-- Expressão da distribuição e calculo de probabildiade -->
 - [X] Modelo Exponencial
 - [X] Modelo Normal
 - [ ] Modelo Cauchy

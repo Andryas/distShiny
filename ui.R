@@ -16,19 +16,24 @@ shinyUI(
       fluidRow(
         column(width = 8,
                div(style = "height:64px;",
-                 selectInput("dist",label = "Escolha uma distribuição",selected = "normal",
+                 selectInput("dist",label = "Escolha um Modelo",selected = "normal",
                    choices = list(
                      Continua = c("Normal" = "normal",
                                "Exponencial" = "exponencial",
                                "Uniforme" = "uniformecont"),
-                     Discreta = c("Uniforme" = "uniformedis"))))),
+                     Discreta = c("Uniforme" = "uniformedis",
+                                  "Binomial" = "binomial",
+                                  "Poisson" = "poisson",
+                                  "Geométrico" = "geometrico",
+                                  "Hipergeométrica" = "hipergeometrica",
+                                  "Binomial Negativa" = "binomialneg"))))),
         column(width = 4, align = "center",
                div(style ="height:64px; margin-top: 26px",
                  actionButton("sobre","",icon("book"),width = "100%")))
         ),
       
       
-      # Uniforme Discreta
+      # Uniforme Discreta ------------------------------------------------------
       conditionalPanel(condition = "input.dist == 'uniformedis'",
                        fluidRow(
                          column(width = 3),
@@ -46,7 +51,100 @@ shinyUI(
                                 numericInput("x2unif_dis",HTML("<div style='width: 132px;'><center>X<sub>2</sub></center></div>"),
                                              value = 5,min = 1))
                        )),
+      # Binomial ---------------------------------------------------------------
+      conditionalPanel(condition = "input.dist == 'binomial'",
+                       fluidRow(
+                         column(width = 6,
+                                numericInput("n_binomial", label = HTML("<div style='width: 164px;'><center>n</center></div>"),min = 1,value = 10,step = 1)),
+                         column(width = 6,
+                                numericInput("p_binomial", label = HTML("<div style='width: 164px;'><center>p</center></div>"),min = 0,max=1,value = 0.5,step = 0.01))
+                       ),
+                       fluidRow(
+                         column(width = 5,
+                                numericInput("x1binom",HTML("<div style='width: 132px;'><center>X<sub>1</sub></center></div>"),
+                                             value = 1, min = 0)),
+                         column(width = 2,
+                                HTML("<div style='margin-top:26px; font-size:20px;'>&leq;X&leq;</div>")), # Arrumar a posição
+                         column(width = 5,
+                                numericInput("x2binom",HTML("<div style='width: 132px;'><center>X<sub>2</sub></center></div>"),
+                                             value = 5,min = 1))
+                       )),
+      # Poisson ----------------------------------------------------------------
+      conditionalPanel(condition = "input.dist == 'poisson'",
+                       fluidRow(
+                         column(width = 3),
+                         column(width = 6,
+                                numericInput("lambda2", label = HTML("<div style='width: 164px;'><center>&lambda;</center></div>"),min = 0.00001,value = 1,step = 0.01)),
+                         column(width = 3)
+                       ),
+                       fluidRow(
+                         column(width = 5,
+                                numericInput("x1pois",HTML("<div style='width: 132px;'><center>X<sub>1</sub></center></div>"),
+                                             value = 1, min = 0)),
+                         column(width = 2,
+                                HTML("<div style='margin-top:26px; font-size:20px;'>&leq;X&leq;</div>")), # Arrumar a posição
+                         column(width = 5,
+                                numericInput("x2pois",HTML("<div style='width: 132px;'><center>X<sub>2</sub></center></div>"),
+                                             value = 5,min = 0))
+                       )),
       
+      # Geometrico -------------------------------------------------------------
+      conditionalPanel(condition = "input.dist == 'geometrico'",
+                       fluidRow(
+                         column(width = 3),
+                         column(width = 6,
+                                numericInput("pgeom", label = HTML("<div style='width: 164px;'><center>p</center></div>"),min = 0.00001,value = 0.5,step = 0.01)),
+                         column(width = 3)
+                       ),
+                       fluidRow(
+                         column(width = 5,
+                                numericInput("x1geom",HTML("<div style='width: 132px;'><center>X<sub>1</sub></center></div>"),
+                                             value = 1, min = 0)),
+                         column(width = 2,
+                                HTML("<div style='margin-top:26px; font-size:20px;'>&leq;X&leq;</div>")), # Arrumar a posição
+                         column(width = 5,
+                                numericInput("x2geom",HTML("<div style='width: 132px;'><center>X<sub>2</sub></center></div>"),
+                                             value = 5,min = 0))
+                       )),
+      # Hipergeométrica --------------------------------------------------------
+      conditionalPanel(condition = "input.dist == 'hipergeometrica'",
+                       fluidRow(
+                         column(width = 4,
+                                numericInput("mhiper", label = HTML("<div style='width: 107px;'><center>m</center></div>"),min = 0,value = 4,step = 1)),
+                         column(width = 4,
+                                numericInput("nhiper", label = HTML("<div style='width: 107px;'><center>n</center></div>"),min = 0,value = 10,step = 1)),
+                         column(width = 4,
+                                numericInput("khiper", label = HTML("<div style='width: 107px;'><center>k</center></div>"),min = 0,value = 5,step = 1))
+                       ),
+                       fluidRow(
+                         column(width = 5,
+                                numericInput("x1hiper",HTML("<div style='width: 132px;'><center>X<sub>1</sub></center></div>"),
+                                             value = 1, min = 0)),
+                         column(width = 2,
+                                HTML("<div style='margin-top:26px; font-size:20px;'>&leq;X&leq;</div>")), # Arrumar a posição
+                         column(width = 5,
+                                numericInput("x2hiper",HTML("<div style='width: 132px;'><center>X<sub>2</sub></center></div>"),
+                                             value = 3,min = 0))
+                       )),
+      
+      # Binomial Negativa ------------------------------------------------------
+      conditionalPanel(condition = "input.dist == 'binomialneg'",
+                       fluidRow(
+                         column(width = 6,
+                                numericInput("kbn", label = HTML("<div style='width: 164px;'><center>k</center></div>"),min = 0,value = 10,step = 1)),
+                         column(width = 6,
+                                numericInput("pbn", label = HTML("<div style='width: 164px;'><center>p</center></div>"),min = 0,value = 0.5,max = 1,step = 0.1))
+                       ),
+                       fluidRow(
+                         column(width = 5,
+                                numericInput("x1bn",HTML("<div style='width: 132px;'><center>X<sub>1</sub></center></div>"),
+                                             value = 1, min = 0)),
+                         column(width = 2,
+                                HTML("<div style='margin-top:26px; font-size:20px;'>&leq;X&leq;</div>")), # Arrumar a posição
+                         column(width = 5,
+                                numericInput("x2bn",HTML("<div style='width: 132px;'><center>X<sub>2</sub></center></div>"),
+                                             value = 3,min = 0))
+                       )),
       # Normal -----------------------------------------------------------------
       conditionalPanel(condition = "input.dist == 'normal'",
                        fluidRow(
@@ -66,8 +164,10 @@ shinyUI(
       # Exponencial ------------------------------------------------------------
       conditionalPanel(condition = "input.dist == 'exponencial'",
                        fluidRow(
+                         column(width = 3),
                          column(width = 6,
-                                numericInput("lambda", label = HTML("<div style='width: 164px;'><center>&lambda;</center></div>"),min = 0.00001,value = 1,step = 0.25))
+                                numericInput("lambda", label = HTML("<div style='width: 164px;'><center>&lambda;</center></div>"),min = 0.00001,value = 1,step = 0.25)),
+                         column(width = 3)
                        ),
                        fluidRow(
                          column(width = 5,

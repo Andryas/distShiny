@@ -120,3 +120,117 @@ uniforme_dis <- function(k,x1,x2){
   
   list(g,r = length(seq(from = x1, to = x2)) / k )
 }
+
+binomial <- function(n,p,x1,x2) {
+  y <- dbinom(0:(2*n),n,p)
+  
+  df <- data.frame(x = 0:(length(y)-1),
+                   y = y)
+  
+  df <- df[df$y >= 0.0000001,]
+  
+  df2 <- data.frame(x = seq(from = x1, to = x2),
+                    y = dbinom(x1:x2,n,p))
+  
+  g <- qplot(x = x, xend = x, yend = y, y = 0, data = df,
+             geom = "segment", xlab = "x", ylab = "f(x)") + 
+    geom_segment(aes(x = x, xend = x, y = 0, yend = y),
+                 data = df2, colour = "blue") + 
+    scale_x_discrete(limits = unique(c(df$x,df2$x)),
+                     labels = as.factor(unique(c(df$x,df2$x))))
+  
+  list(g,r = if(x1 == x2) {dbinom(x2,n,p)} else {sum(dbinom(x1:x2,n,p))})
+}
+
+poisson <- function(lambda,x1,x2) {
+  f <- floor(lambda - sqrt(lambda) * 6)
+  f <- if(f <= 0){0} else {f}
+  x <- f:ceiling(lambda + sqrt(lambda) * 6)
+  
+  
+  df <- data.frame(x = x,
+                   y = dpois(x,lambda))
+  
+  df <- subset(df,df$y >= 0.0001)
+  
+  df2 <- data.frame(x = seq(from = x1, to = x2),
+                    y = dpois(x1:x2,lambda))
+  
+  g <- qplot(x = x, xend = x, yend = y, y = 0, data = df,
+             geom = "segment", xlab = "x", ylab = "f(x)") + 
+    geom_segment(aes(x = x, xend = x, y = 0, yend = y),
+                 data = df2, colour = "blue") + 
+    scale_x_discrete(limits = unique(c(df$x,df2$x)),
+                     labels = as.factor(unique(c(df$x,df2$x))))
+  
+  list(g,r = if(x1 == x2) {dpois(x2,lambda)} else {sum(dpois(x1:x2,lambda))})
+}
+
+geometrico <- function(p,x1,x2){
+  x <- 0:(5/p)
+  
+  df <- data.frame(x = x,
+                   y = dgeom(x,p))
+  
+  
+  df2 <- data.frame(x = seq(from = x1, to = x2),
+                    y = dgeom(x1:x2,p))
+  
+  df2 <- subset(df2, df2$y >= 0.0001)
+  
+  g <- qplot(x = x, xend = x, yend = y, y = 0, data = df,
+             geom = "segment", xlab = "x", ylab = "f(x)")
+  
+  g <- if(nrow(df2) == 0){g} else {g + 
+      geom_segment(aes(x = x, xend = x, y = 0, yend = y),
+                   data = df2, colour = "blue")
+  }
+  
+  list(g,r = if(x1 == x2) {dgeom(x2,p)} else {sum(dgeom(x1:x2,p))})
+}
+
+hipergeometrica <- function(m,n,k,x1,x2){
+    x <- 0:m
+    
+    df <- data.frame(x = x,
+                     y = dhyper(x,m,n,k))
+    
+    # X1 tem que ser maior que 0 e x2 menor que k
+    df2 <- data.frame(x = seq(from = x1, to = x2),
+                      y = dhyper(x1:x2,m = m,n = n,k = k))
+    
+    
+    g <- qplot(x = x, xend = x, yend = y, y = 0, data = df,
+               geom = "segment", xlab = "m", ylab = "f(x)") +
+      geom_segment(aes(x = x, xend = x, y = 0, yend = y),
+                   data = df2, colour = "blue") + 
+      scale_x_discrete(limits = unique(c(df$x,df2$x)),
+                       labels = as.factor(unique(c(df$x,df2$x))))
+    
+    
+    list(g,r = if(x1 == x2) {dhyper(x2,m,n,k)} 
+         else {sum(dhyper(x1:x2,m,n,k))})
+}
+
+binomialneg <- function(k,p,x1,x2) {
+  x <- 0:(10/p)
+  
+  df <- data.frame(x = x,
+                   y = dnbinom(x,size = k,prob = p))
+  
+  
+  df2 <- data.frame(x = seq(from = x1, to = x2),
+                    y = dnbinom(x1:x2,size = k,prob = p))
+  
+  df2 <- subset(df2, df2$y >= 0.0001)
+  
+  g <- qplot(x = x, xend = x, yend = y, y = 0, data = df,
+             geom = "segment", xlab = "x", ylab = "f(x)")
+  
+  g <- if(nrow(df2) == 0){g} else {g + 
+      geom_segment(aes(x = x, xend = x, y = 0, yend = y),
+                   data = df2, colour = "blue")
+  }
+  
+  list(g,r = if(x1 == x2) {dnbinom(x2,k,p)} else {sum(dbinom(x1:x2,k,p))})
+}
