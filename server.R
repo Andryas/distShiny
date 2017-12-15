@@ -31,7 +31,15 @@ shinyServer(function(input, output, session) {
   # Uniforme Continua ----------------------------------------------------------
   runifcont <- reactive({uniforme_cont(input$a_unif_cont,input$b_unif_cont,
                                        input$x1unif_cont,input$x2unif_cont)})
+  comp_unif_cont <- reactive({length(input$a_unif_cont:input$b_unif_cont)-1})
+  comp_unif_cont2 <- reactive({ input$x2unif_cont - input$x1unif_cont})
+  # Beta -----------------------------------------------------------------------
+  rbeta <- reactive({beta(input$a_beta,input$b_beta,input$x1beta,input$x2beta)})
   
+  
+  # Gamma ----------------------------------------------------------------------
+  rgamma <- reactive({gamma(a = input$a_gamma,input$b_gamma,input$x1gamma,
+                            input$x2gamma)})
   # Uniforme Discreta ----------------------------------------------------------
   runifdis <- reactive({uniforme_dis(input$k_unif_dis,input$x1unif_dis,
                                      input$x2unif_dis)})
@@ -55,6 +63,7 @@ shinyServer(function(input, output, session) {
   rbinomialneg <- reactive({binomialneg(input$kbn,input$pbn,input$x1bn,input$x2bn)})
   near_bn <- reactive({input$x1bn + 1})
     
+  
   
   # Descrição ------------------------------------------------------------------
   observeEvent(input$sobre,{
@@ -180,6 +189,36 @@ shinyServer(function(input, output, session) {
               withMathJax(helpText("$$X \\sim BN(r,p)$$")),
               easyClose = TRUE,
               footer = ""
+            )),
+            # Beta -------------------------------------------------------------
+            beta = showModal(modalDialog(
+              title = "Modelo Beta",
+              "Função densidade de probabilidade:",
+              withMathJax(helpText("$$f(x) = \\frac{\\Gamma(\\alpha + \\beta)}{\\Gamma(\\alpha) \\Gamma(\\beta)} x^{\\alpha-1} (1-x)^{\\beta-1}, \\ x \\ \\epsilon \\ (0,1) \\ e \\ \\alpha,\\beta \\ > 0$$")),
+              HTML("Função Gamma (&Gamma;(x)):"),
+              withMathJax(helpText("$$\\Gamma(x) = \\int_0^{\\infty} t^{x-1}e^{-t}dt$$")),
+              "Esperança e Variância",
+              withMathJax(helpText("$$E(x) = \\mu = \\frac{\\alpha}{\\alpha + \\beta}$$")),
+              withMathJax(helpText("$$Var(x) = \\sigma^2 = \\frac{\\alpha \\beta}{(\\alpha + \\beta + 1)(\\alpha + \\beta)^2}$$")),
+              "Representação:",
+              withMathJax(helpText("$$X \\sim Beta(\\alpha,\\beta)$$")),
+              easyClose = TRUE,
+              footer = ""
+            )),
+            # Gamma ------------------------------------------------------------
+            gamma = showModal(modalDialog(
+              title = "Modelo Gamma",
+              "Função densidade de probabilidade:",
+              withMathJax(helpText("$$f(x) = \\left\\{\\begin{matrix} \\frac{\\beta^{\\alpha} x^{\\alpha -1} e^{-\\beta x}}{\\Gamma(\\alpha)},\\ \\ x \\geq 0 \\\\ 0 &, \\text{caso contrário} \\end{matrix}\\right.$$")),
+              HTML("Função Gamma (&Gamma;(x)):"),
+              withMathJax(helpText("$$\\Gamma(x) = \\int_0^{\\infty} t^{x-1}e^{-t}dt$$")),
+              "Esperança e Variância",
+              withMathJax(helpText("$$E(x) = \\mu = \\frac{\\alpha}{\\beta}$$")),
+              withMathJax(helpText("$$Var(x) = \\sigma^2 = \\frac{\\alpha}{\\beta^2}$$")),
+              "Representação:",
+              withMathJax(helpText("$$X \\sim \\Gamma(\\alpha,\\beta)$$")),
+              easyClose = TRUE,
+              footer = ""
             ))
     )
            
@@ -247,7 +286,22 @@ shinyServer(function(input, output, session) {
            "x1 não pode ser maior que x2."),
       need(!(input$pbn > 1 || input$pbn <= 0 && 
                input$dist == "binomialneg"),
-           "p não pode ser maior que 1 ou menor igual que zero.")
+           "p não pode ser maior que 1 ou menor igual que zero."),
+      need(!(input$x1beta >= input$x2beta && 
+               input$dist == "beta"),
+           "x1 não pode ser maior que x2."),
+      need(!(input$a_beta <= 0 || input$b_beta <= 0 && 
+               input$dist == "beta"),
+           "alpha e beta não podem ser menores que 0."),
+      need(!(input$x1gamma >= input$x2gamma && 
+               input$dist == "gamma"),
+           "x1 não pode ser maior que x2."),
+      need(!(input$x1gamma < 0 || input$x2gamma < 0 && 
+               input$dist == "gamma"),
+           "x1 e x2 devem ser maior ou igual a 0."),
+      need(!(input$a_gamma <= 0 || input$b_gamma <= 0 && 
+               input$dist == "gamma"),
+           "alpha e beta não podem ser menores que 0.")
     )
     switch(input$dist,
            normal = rn()[[1]],
@@ -258,7 +312,9 @@ shinyServer(function(input, output, session) {
            poisson = rpoisson()[[1]],
            geometrico = rgeom()[[1]],
            hipergeometrica = rhipergeom()[[1]],
-           binomialneg = rbinomialneg()[[1]]
+           binomialneg = rbinomialneg()[[1]],
+           beta = rbeta()[[1]],
+           gamma = rgamma()[[1]]
       )
   })
   
@@ -335,6 +391,16 @@ shinyServer(function(input, output, session) {
                 input$x1,"-",input$mu,"}{",input$sigma,"}\\leq Z \\leq \\frac{",
                 input$x2,"-",input$mu,"}{",input$sigma,"}) \\\\ P(",rn()[[2]]),
                 "\\leq Z \\leq",rn()[[3]],")=",rn()[[4]],"$$")),
+           # Beta --------------------------------------------------------------
+           beta = withMathJax(helpText(paste0("$$P(",input$x1beta,"\\leq X \\leq",input$x2beta,") = ",
+                                              "\\frac{\\Gamma (",input$a_beta,"+",input$b_beta,")}{\\Gamma (",input$a_beta,") \\Gamma (",input$b_beta,")}",
+                                              "\\int_{",input$x1beta,"}^{",input$x2beta,"} ",
+                                              "x^{",input$a_beta,"-1}(1-x)^{",input$b_beta,"-1}dx =",rbeta()[[2]],"$$"))),
+           # Gamma -------------------------------------------------------------
+           gamma = withMathJax(helpText(paste0("$$P(",input$x1gamma,"\\leq X \\leq", input$x2gamma,") = ",
+                                               "\\frac{",input$b_gamma,"^{",input$a_gamma,"}}{\\Gamma(",input$a_gamma,")}",
+                                               "\\int_{",input$x1gamma,"}^{",input$x2gamma,"}x^{",input$a_gamma,"-1}e^{-",input$b_gamma,"x}dx",
+                                               "= ", rgamma()[[2]],"$$"))),
            # Exponencial -------------------------------------------------------
            exponencial = withMathJax(helpText("$$P(X_1 \\leq X \\leq X_2) =",
               "P(",input$x1exp,"\\leq X \\leq",input$x2exp,")=",
@@ -343,6 +409,14 @@ shinyServer(function(input, output, session) {
               "[-e^{-",input$lambda,"x}]^{",input$x2exp,"}_{",input$x1exp,"} =",
               "e^{-",input$x1exp," x} - e^{-",input$x2exp," x} \\\\ P(",
               input$x1exp,"\\leq X \\leq",input$x2exp,") = ",rexp()[[2]],"$$")),
+           # Uniforme Continua -------------------------------------------------
+           uniformecont = withMathJax(helpText(paste0("$$P(",input$x1unif_cont,"\\leq X \\leq",input$x2unif_cont,") =",
+                                              "\\int_{",input$x1unif_cont,"}^{",input$x2unif_cont,"}\\frac{1}{",comp_unif_cont(),"}dx =",
+                                              "\\frac{1}{",comp_unif_cont(),"}\\int_{",input$x1unif_cont,"}^{",input$x2unif_cont,"}dx = ",
+                                              "\\frac{1}{",comp_unif_cont(),"}[x]^{",input$x2unif_cont,"-(",input$x1unif_cont,")} =",
+                                              "\\frac{1}{",comp_unif_cont(),"}[",input$x2unif_cont,"-(",input$x1unif_cont,")]=",
+                                              "\\frac{",comp_unif_cont2(),"}{",comp_unif_cont(),"}=", runifcont()[[2]],"$$"))),
+                                              
            # Uniforme discreta -------------------------------------------------
            uniformedis = if(input$x1unif_dis == input$x2unif_dis) {
              withMathJax(helpText(paste0("$$P(X =",input$x2unif_dis,") =",

@@ -102,6 +102,71 @@ uniforme_cont <- function(a,b,x1,x2){
   list(g,r = punif(x2,a,b) - punif(x1,a,b))
 }
 
+beta <- function(a,b,x1,x2) {
+  x <- seq(0,1, length.out = 1000)
+  
+  df <- data.frame(x = x,
+                   y = dbeta(x,a,b))
+  
+  
+  df2 <- data.frame(x = c(x1,seq(from = x1, to = x2, length.out = 1000),x2),
+                    y = c(0,dbeta(seq(x1,x2,length.out = 1000),a,b),0))
+  
+  sumy <- max(df$y)*0.25
+  
+  arrow1 <- rbind(df2[2,],c(df2[2,1],df2[2,2] + sumy))
+  
+  arrow2 <- rbind(df2[nrow(df2)-1,], c(df2[nrow(df2)-1,1],
+                                       df2[nrow(df2)-1,2] + sumy))
+  
+  
+  g <- qplot(x = x, y = y, data = df, geom = "line",xlab = "x", ylab = "f(x)") + 
+    geom_polygon(data = df2, aes(x,y), fill = "blue") + 
+    geom_line(data = arrow1,aes(x = x,y = y),
+              arrow = arrow(length = unit(0.3,"cm"),ends = "first",type = "closed")) +
+    geom_line(data = arrow2,aes(x = x,y = y),
+              arrow = arrow(length = unit(0.3,"cm"),ends = "first",type = "closed")) +
+    annotate("text",x = arrow1$x[2], y = arrow1$y[2] + sumy * 0.2, label = x1) +
+    annotate("text",x = arrow2$x[2], y = arrow2$y[2] + sumy * 0.2, label = x2)
+  
+  list(g,r = pbeta(x2,a,b) - pbeta(x1,a,b)) 
+}
+
+gamma <- function(a,b,x1,x2) {
+  x <- seq(0,((a/b) * 30),length.out = 1000)
+  
+  df <- data.frame(x = x,
+                   y = dgamma(x,shape = a,scale = b))
+  
+  df <- subset(df,df$y >= 0.0001)
+  
+  
+  df2 <- data.frame(x = c(x1,seq(from = x1, to = x2, length.out = 1000),x2),
+                    y = c(0,dgamma(seq(x1,x2,length.out = 1000),shape = a,
+                                   scale = b),0))
+  
+  sumy <- max(df$y)*0.25
+  
+  arrow1 <- rbind(df2[2,],c(df2[2,1],df2[2,2] + sumy))
+  
+  arrow2 <- rbind(df2[nrow(df2)-1,], c(df2[nrow(df2)-1,1],
+                                       df2[nrow(df2)-1,2] + sumy))
+  
+  
+  g <- qplot(x = x, y = y, data = df, geom = "line",xlab = "x", ylab = "f(x)") + 
+    geom_polygon(data = df2, aes(x,y), fill = "blue") + 
+    geom_line(data = arrow1,aes(x = x,y = y),
+              arrow = arrow(length = unit(0.3,"cm"),ends = "first",type = "closed")) +
+    geom_line(data = arrow2,aes(x = x,y = y),
+              arrow = arrow(length = unit(0.3,"cm"),ends = "first",type = "closed")) +
+    annotate("text",x = arrow1$x[2], y = arrow1$y[2] + sumy * 0.2, label = x1) +
+    annotate("text",x = arrow2$x[2], y = arrow2$y[2] + sumy * 0.2, label = x2)
+  
+  list(g,r = pgamma(x2,shape = a,scale = b) - pgamma(x1,shape = a,scale = b)) 
+}
+
+
+
 # Discretas
 uniforme_dis <- function(k,x1,x2){
   x <- seq(from = 1, to = k)

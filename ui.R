@@ -20,7 +20,9 @@ shinyUI(
                    choices = list(
                      Continua = c("Normal" = "normal",
                                "Exponencial" = "exponencial",
-                               "Uniforme" = "uniformecont"),
+                               "Uniforme" = "uniformecont",
+                               "Beta" = "beta",
+                               "Gamma" = "gamma"),
                      Discreta = c("Uniforme" = "uniformedis",
                                   "Binomial" = "binomial",
                                   "Poisson" = "poisson",
@@ -176,6 +178,38 @@ shinyUI(
                                 HTML("<div style='margin-top:26px; font-size:20px;'>&leq;X&leq;</div>")), # Arrumar a posição
                          column(width = 5,
                                 numericInput("x2exp",HTML("<div style='width: 132px;'><center>X<sub>2</sub></center></div>"),min = 0, value = 1))
+                       )),
+      # Beta -------------------------------------------------------------------
+      conditionalPanel(condition = "input.dist == 'beta'",
+                       fluidRow(
+                         column(width = 6,
+                                numericInput("a_beta", label = HTML("<div style='width: 164px;'><center>&alpha;</center></div>"),value = 2,min = 1,step = 1)),
+                         column(width = 6,
+                                numericInput("b_beta", label = HTML("<div style='width: 164px;'><center>&beta;</center></div>"),value = 2,step = 1, min = 1))
+                       ),
+                       fluidRow(
+                         column(width = 5,
+                                numericInput("x1beta",HTML("<div style='width: 132px;'><center>X<sub>1</sub></center></div>"),value = 0,min = 0,step = 0.01,max = 1)),
+                         column(width = 2,
+                                HTML("<div style='margin-top:26px; font-size:20px;'>&leq;X&leq;</div>")), # Arrumar a posição
+                         column(width = 5,
+                                numericInput("x2beta",HTML("<div style='width: 132px;'><center>X<sub>2</sub></center></div>"), value = 0.5,min = 0,max = 1,step = 0.01))
+                       )),
+      # Gamma ------------------------------------------------------------------
+      conditionalPanel(condition = "input.dist == 'gamma'",
+                       fluidRow(
+                         column(width = 6,
+                                numericInput("a_gamma", label = HTML("<div style='width: 164px;'><center>&alpha;</center></div>"),value = 2,min = 1,step = 1)),
+                         column(width = 6,
+                                numericInput("b_gamma", label = HTML("<div style='width: 164px;'><center>&beta;</center></div>"),value = 2,step = 1, min = 1))
+                       ),
+                       fluidRow(
+                         column(width = 5,
+                                numericInput("x1gamma",HTML("<div style='width: 132px;'><center>X<sub>1</sub></center></div>"),value = 5,min = 0,step = 1)),
+                         column(width = 2,
+                                HTML("<div style='margin-top:26px; font-size:20px;'>&leq;X&leq;</div>")), # Arrumar a posição
+                         column(width = 5,
+                                numericInput("x2gamma",HTML("<div style='width: 132px;'><center>X<sub>2</sub></center></div>"), value = 15,min = 0,step = 1))
                        )),
       # Uniforme Continua ---------------------------------------------------------------
       conditionalPanel(condition = "input.dist == 'uniformecont'",

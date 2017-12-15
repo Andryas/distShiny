@@ -20,10 +20,8 @@ Os modelos abordados são:
 - [X] Modelo Uniforme Contínuo <!-- Expressão da distribuição e calculo de probabildiade -->
 - [X] Modelo Exponencial
 - [X] Modelo Normal
-- [ ] Modelo Cauchy
-- [ ] Modelo Gama
-- [ ] Modelo Beta
-- [ ] Modelo Von Mises
+- [X] Modelo Gama
+- [X] Modelo Beta
 
 
 Para visualizar a aplicação shiny basta abrir o software R, instalar os pacotes
