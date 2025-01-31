@@ -1,42 +1,33 @@
-# Principais modelos discretos e contínuos em shiny
+# Main Discrete and Continuous Models in Shiny
 
 ***
 
-Os modelos dessa aplicação em shiny, os quais são usuais em cursos de estatística básica, tem como objetivo auxiliar estudantes das mais diversas áreas a compreender as principais distribuições de probabilidade. 
+The models in this Shiny application, which are commonly used in basic statistics courses, aim to help students from various fields understand the main probability distributions.
 
-Os modelos abordados são:
+The models covered are:
 
-**Modelos Discretos**
+### **Discrete Models**
+- [X] Discrete Uniform Model <!-- Probability calculation -->
+- [X] Bernoulli/Binomial Model <!-- Probability calculation -->
+- [X] Negative Binomial Model <!-- Probability calculation -->
+- [X] Geometric Model <!-- Distribution expression and probability calculation -->
+- [X] Poisson Model <!-- Distribution expression and probability calculation -->
+- [X] Hypergeometric Model <!-- Distribution expression and probability calculation -->
 
-- [X] Modelo Uniforme Discreto <!-- calculo de probabildiade -->
-- [X] Modelo Bernoulli/Binomial <!--  calculo de probabildiade -->
-- [X] Modelo Binomial Negativo <!-- calculo de probabildiade -->
-- [X] Modelo Geométrico <!-- Expressão da distribuição e calculo de probabildiade -->
-- [X] Modelo Poisson <!-- Expressão da distribuição e calculo de probabildiade -->
-- [X] Modelo Hipergeométrico <!-- Expressão da distribuição e calculo de probabildiade -->
+### **Continuous Models**
+- [X] Continuous Uniform Model <!-- Distribution expression and probability calculation -->
+- [X] Exponential Model
+- [X] Normal Model
+- [X] Gamma Model
+- [X] Beta Model
 
-**Modelos Contínuos**
-
-- [X] Modelo Uniforme Contínuo <!-- Expressão da distribuição e calculo de probabildiade -->
-- [X] Modelo Exponencial
-- [X] Modelo Normal
-- [X] Modelo Gama
-- [X] Modelo Beta
-
-
-Para visualizar a aplicação shiny basta abrir o software R, instalar os pacotes
-shiny e devtools, caso não estejam instalados, e digitar o comando
-shiny::runGitHub("andryas/distShiny"). 
+To access the Shiny application, simply open R, install the **shiny** and **devtools** packages if they are not already installed, and run the following command:
 
 ```
 # install.packages(c("shiny","devtools"))
 shiny::runGitHub("andryas/distShiny")
 ```
 
-Caso preferir pode utilizar a aplicação shiny por esse [link](http://andryaswaurzenczak.shinyapps.io/distshiny)
+Alternatively, you can access the Shiny application through this [link](http://andryaswaurzenczak.shinyapps.io/distshiny).
 
-
-Voilà. 
-
-
-***
+Voilà.
